@@ -1,108 +1,92 @@
-# AP-Lab-Activities-W8-Andi-Arjuna-Putra
+Lab Activity — Interfaces (Java OOP)
 
-Getting Started
-Prerequisites:
-- Java JDK 17+ installed
-- Gradle 9.2+ (wrapper included)
-- A suitable IDE (IntelliJ IDEA, Eclipse, or VS Code)
+## Part A — Concept Check
 
-Setup
+- **Mengapa kita menggunakan interface?**  
+  Karena *interface* adalah **kontrak** yang mendefinisikan perilaku umum (method) yang harus diimplementasikan oleh class. Ini memungkinkan *unrelated classes* berbagi kemampuan yang sama tanpa harus berbagi identitas.
 
-Clone the repository:
+- **Perbedaan inheritance vs interface?**  
+  - *Inheritance* = hubungan **is‑a** (contoh: `Dog` is‑a `Animal`).  
+  - *Interface* = hubungan **can‑do** (contoh: `Invoice` dan `Employee` can‑do `Payable`).  
 
-git clone https://github.com/your-username/lab-activities.git
-cd lab-activities
+- **Mengapa polymorphism penting di interface?**  
+  Karena polymorphism memungkinkan kita memperlakukan objek berbeda (`Invoice`, `Employee`) sebagai tipe yang sama (`Payable`), sehingga kode lebih fleksibel dan modular.
 
-Build the project:
+---
 
-./gradlew build
+## Part B — Code Reading
 
-Run the application:
+- **Interface definition:**
+  ```java
+  public interface Payable {
+      double getPaymentAmount();
+  }
+  ```
+  Semua class yang mengimplementasikan `Payable` wajib menyediakan method `getPaymentAmount()`.
 
-./gradlew run
+- **Implementasi pada class `Invoice`:**
+  ```java
+  public class Invoice implements Payable {
+      private int quantity;
+      private double pricePerItem;
 
-Lab Activities Overview
+      @Override
+      public double getPaymentAmount() {
+          return quantity * pricePerItem;
+      }
+  }
+  ```
 
-1. Basic Java Programs
+- **Implementasi pada class `SalariedEmployee`:**
+  ```java
+  public class SalariedEmployee extends Employee {
+      private double weeklySalary;
 
-Printing output, variables, and data types
+      @Override
+      public double getPaymentAmount() {
+          return weeklySalary;
+      }
+  }
+  ```
 
-Control structures (if-else, loops)
+- **Mengapa method `getPaymentAmount()` berbeda?**  
+  Karena setiap class punya cara sendiri menghitung pembayaran. `Invoice` menghitung dari jumlah barang × harga, sedangkan `Employee` menghitung dari gaji mingguan.
 
-Functions and modular programming
+---
 
-2. Object-Oriented Programming (OOP)
+## Part C — Interface Polymorphism
 
-Classes and objects
+- **Contoh penggunaan polymorphism:**
+  ```java
+  List<Payable> accountsPayable = new ArrayList<>();
+  accountsPayable.add(new SalariedEmployee("Alice", "E001", 1200.00));
+  accountsPayable.add(new Invoice("Widget-99", 5, 20.00));
 
-Inheritance and polymorphism
+  for (Payable item : accountsPayable) {
+      System.out.println(item.getPaymentAmount());
+  }
+  ```
 
-Interfaces and abstract classes
+- **Mengapa ini powerful?**  
+  Karena kita bisa menyimpan objek berbeda dalam satu collection (`List<Payable>`) dan memanggil method yang sama (`getPaymentAmount()`), tanpa peduli class aslinya.
 
-3. Collections and Generics
+---
 
-Lists, Sets, Maps
+## Part D — Design Note
 
-Iterators and Streams
+Interface `Payable` dipilih karena baik `Employee` maupun `Invoice` sama‑sama membutuhkan kemampuan untuk menghitung jumlah pembayaran, meskipun mereka tidak berbagi parent class yang sama. Dengan interface, kita bisa menyatukan perilaku ini dalam satu kontrak, sehingga sistem pembayaran lebih fleksibel dan mudah diperluas.
 
-Generic methods and classes
+---
 
-4. Exception Handling
+## Summary
 
-Try-catch-finally
+- **Interface** = kontrak perilaku (*can‑do*).  
+- **Inheritance** = identitas (*is‑a*).  
+- **Polymorphism** = memperlakukan objek berbeda sebagai tipe yang sama.  
+- Lab ini menunjukkan bagaimana `Employee` dan `Invoice` bisa sama‑sama “dibayar” melalui interface `Payable`.
 
-Custom exceptions
+---
 
-5. File I/O
+Jadi, inti dari lab ini adalah: **gunakan interface ketika beberapa class berbagi kemampuan yang sama, meskipun mereka tidak berhubungan secara hierarki.**
 
-Reading and writing files
-
-Serialization
-
-6. Testing
-
-JUnit tests
-
-Mocking and assertions
-
-7. Gradle Build System
-
-Compiling and running tasks
-
-Managing dependencies
-
-Handling build errors (e.g., file lock issues on Windows)
-
-⚙️ Common Issues & Fixes
-
-Unable to delete directory error: Occurs when OneDrive or antivirus locks files. Fix by pausing sync or manually deleting the build/ folder.
-
-Gradle Daemon conflicts: Run ./gradlew --stop to terminate background processes.
-
-📖 Learning Goals
-
-Strengthen Java programming fundamentals
-
-Understand Gradle build automation
-
-Practice debugging and troubleshooting
-
-Gain confidence in writing clean, testable code
-
-🤝 Contribution Guidelines
-
-Fork the repository
-
-Create a feature branch (git checkout -b feature-name)
-
-Commit changes with clear messages
-
-Submit a pull request
-
-📜 License
-
-This repository is licensed under the MIT License. See LICENSE file for details.
-
-🎯 Final Notes
-
-This repository is intended as a learning playground. Each lab activity builds upon the previous one, guiding students from basic syntax to advanced concepts. Explore, experiment, and enjoy coding!
+---
